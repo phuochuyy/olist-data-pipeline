@@ -46,7 +46,6 @@ services:
       - ./dbt_project:/opt/airflow/dbt_project
       - ./data:/opt/airflow/data
       - ./great_expectations:/opt/airflow/great_expectations
-      - ./simple_data_test.py:/opt/airflow/simple_data_test.py
     ports:
       - "8080:8080"
     depends_on:
