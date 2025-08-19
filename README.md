@@ -1,307 +1,129 @@
 # 🚀 Olist Data Engineering Pipeline
 
-Một pipeline data engineering hiện đại và toàn diện cho việc xử lý và phân tích dữ liệu thương mại điện tử Olist (Brazil).
+Data pipeline tự động để xử lý và phân tích dữ liệu e-commerce từ Brazil (Olist dataset).
 
-[![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
-[![Apache Airflow](https://img.shields.io/badge/Apache%20Airflow-017CEE?style=for-the-badge&logo=apache-airflow&logoColor=white)](https://airflow.apache.org/)
-[![Apache Spark](https://img.shields.io/badge/Apache%20Spark-E25A1C?style=for-the-badge&logo=apache-spark&logoColor=white)](https://spark.apache.org/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
-[![dbt](https://img.shields.io/badge/dbt-FF694B?style=for-the-badge&logo=dbt&logoColor=white)](https://www.getdbt.com/)
+## ✨ Tính năng chính
 
-> **Note**: Đây là một dự án demo để minh họa kiến trúc data engineering pipeline hiện đại. Code được tối ưu hóa cho môi trường học tập và phát triển.
+- 🔄 **Tự động hóa hoàn toàn**: Chỉ cần 1 lệnh để khởi chạy
+- 📊 **Xử lý 1.5M+ records**: 9 bảng dữ liệu thật từ Olist
+- 🧪 **Kiểm tra chất lượng**: 15 tests tự động
+- 📈 **Dashboard sẵn có**: Phân tích khách hàng và doanh thu
+- 🐳 **Docker**: Không cần cài đặt phức tạp
 
-## 🏗️ Kiến trúc
+## 🛠️ Công nghệ sử dụng
 
-Pipeline này được thiết kế theo mô hình **Medallion Architecture** (Bronze-Silver-Gold) với các layers:
+- **Apache Airflow**: Điều phối pipeline tự động
+- **Apache Spark**: Xử lý dữ liệu lớn  
+- **PostgreSQL**: Database lưu trữ
+- **dbt**: Transform dữ liệu
+- **Grafana**: Dashboard và giám sát
+- **Docker**: Container hóa tất cả
 
-- **Bronze Layer (Raw)**: Dữ liệu thô từ CSV files
-- **Silver Layer (Staging)**: Dữ liệu đã được làm sạch và chuẩn hóa  
-- **Gold Layer (Marts)**: Dữ liệu đã được tổng hợp và sẵn sàng cho analytics
-
-### Công nghệ sử dụng
-
-| Thành phần | Công nghệ | Mục đích |
-|------------|-----------|----------|
-| **Orchestration** | Apache Airflow | Điều phối và lập lịch pipeline |
-| **Data Processing** | Apache Spark | Xử lý dữ liệu quy mô lớn |
-| **Data Warehouse** | PostgreSQL | Lưu trữ dữ liệu |
-| **Data Transformation** | dbt | Transformation và modeling |
-| **Data Quality** | Great Expectations | Kiểm tra chất lượng dữ liệu |
-| **Monitoring** | Grafana | Giám sát và visualization |
-| **Caching** | Redis | Cache cho hiệu suất |
-| **Containerization** | Docker | Container hóa services |
-| **Exploration** | Jupyter Lab | Data exploration và analysis |
-
-## 📊 Dataset
-
-Dữ liệu Olist bao gồm 9 bảng chính:
-
-1. **olist_customers_dataset.csv** - Thông tin khách hàng
-2. **olist_orders_dataset.csv** - Thông tin đơn hàng
-3. **olist_order_items_dataset.csv** - Chi tiết sản phẩm trong đơn hàng
-4. **olist_order_payments_dataset.csv** - Thông tin thanh toán
-5. **olist_order_reviews_dataset.csv** - Đánh giá của khách hàng
-6. **olist_products_dataset.csv** - Catalog sản phẩm
-7. **olist_sellers_dataset.csv** - Thông tin người bán
-8. **olist_geolocation_dataset.csv** - Dữ liệu địa lý
-9. **product_category_name_translation.csv** - Dịch tên danh mục
-
-## 🚀 Hướng dẫn cài đặt
-
-### Yêu cầu hệ thống
-
-- Docker & Docker Compose
-- 8GB RAM trở lên
-- 10GB dung lượng trống
-
-### Cài đặt nhanh
+## � Cài đặt nhanh
 
 ```bash
-# Clone repository và di chuyển vào thư mục dự án
-cd /home/phuochuy/Projects/pipeline05
+# 1. Clone project
+git clone https://github.com/phuochuyy/olist-data-pipeline.git
+cd olist-data-pipeline
 
-# Chạy script cài đặt
-make setup
-
-# Hoặc chạy thủ công
-chmod +x data_pipeline/setup.sh
-./data_pipeline/setup.sh
+# 2. Khởi chạy (1 lệnh duy nhất)
+make setup && make up
 ```
 
-### Cài đặt từng bước
-
-1. **Khởi động services**:
-```bash
-make start
-```
-
-2. **Kiểm tra trạng thái**:
-```bash
-make status
-```
-
-3. **Xem logs**:
-```bash
-make logs
-```
+**Chờ 2-3 phút để tất cả services khởi động xong.**
 
 ## 🎯 Sử dụng
 
-### 1. Truy cập các giao diện
+### Truy cập các giao diện
 
 | Service | URL | Username | Password |
 |---------|-----|----------|----------|
-| Airflow | http://localhost:8080 | admin | admin |
-| Spark UI | http://localhost:8081 | - | - |
-| Grafana | http://localhost:3000 | admin | admin |
-| Jupyter Lab | http://localhost:8888 | - | - |
+| Airflow (Workflow) | localhost:8080 | admin | admin |
+| Grafana (Dashboard) | localhost:3000 | admin | admin |
+| Jupyter (Analysis) | localhost:8888 | - | - |
 
-### 2. Chạy Pipeline
+### Chạy Pipeline
 
-1. Truy cập Airflow UI (http://localhost:8080)
-2. Đăng nhập với admin/admin
-3. Tìm DAG `olist_data_pipeline`
-4. Enable DAG và trigger chạy
+1. Mở **Airflow**: http://localhost:8080
+2. Đăng nhập: `admin` / `admin`  
+3. Tìm DAG: `olist_pipeline_dag`
+4. Bật DAG và click **Trigger**
+5. Chờ 5-10 phút để hoàn thành
 
-### 3. Giám sát Pipeline
+### Xem kết quả
 
-- **Airflow**: Theo dõi task execution và logs
-- **Spark UI**: Giám sát Spark jobs và performance
-- **Grafana**: Dashboards cho business metrics
-- **Jupyter**: Data exploration và ad-hoc analysis
+- **Grafana**: Xem dashboard phân tích khách hàng
+- **Jupyter**: Khám phá dữ liệu chi tiết
 
-## 📋 Các lệnh hữu ích
+## ⚙️ Các lệnh hữu ích
 
 ```bash
-# Khởi động pipeline
-make start
+# Khởi động
+make up
 
-# Dừng pipeline
-make stop
+# Dừng lại  
+make down
 
-# Restart pipeline
-make restart
+# Xem logs
+make logs
 
-# Chạy dbt transformations
+# Chạy dbt
 make dbt-run
 
-# Chạy dbt tests
+# Test dữ liệu
 make dbt-test
-
-# Kết nối PostgreSQL
-make psql
-
-# Mở Spark shell
-make spark-shell
-
-# Backup database
-make backup
 
 # Dọn dẹp
 make clean
-
-# Hiển thị URLs
-make urls
 ```
 
-## 🔄 Data Flow
+## � Dữ liệu được xử lý
 
-```
-CSV Files → Raw Layer (Bronze) → Staging Layer (Silver) → Marts Layer (Gold) → Analytics
-    ↓              ↓                    ↓                   ↓              ↓
- Ingestion    Data Quality      Transformation        Aggregation    Visualization
-```
+Pipeline tự động xử lý **9 bảng dữ liệu** từ Olist:
 
-### Luồng xử lý chi tiết:
+- 👥 Khách hàng (100k records)
+- 📦 Đơn hàng (100k records) 
+- 🛍️ Sản phẩm (73k records)
+- 💳 Thanh toán (103k records)
+- ⭐ Đánh giá (100k records)
+- 🏪 Người bán (3k records)
+- 📍 Địa lý (1M records)
 
-1. **Data Ingestion**: Spark đọc CSV files và load vào raw schema
-2. **Data Quality**: Great Expectations kiểm tra chất lượng dữ liệu
-3. **Data Transformation**: dbt transform data từ raw → staging → marts
-4. **Data Validation**: Kiểm tra business rules và data consistency
-5. **Analytics**: Tạo dashboards và reports trong Grafana
+**Tổng cộng: 1.5M+ records được xử lý tự động**
 
-## 📊 Analytics & Reports
+## 📈 Kết quả phân tích
 
-### Customer Analytics
-- Customer segmentation (VIP, Premium, Regular, New)
-- Customer lifetime value
-- Purchase behavior analysis
-- Geographic distribution
+Sau khi pipeline chạy xong, bạn sẽ có:
 
-### Product Analytics  
-- Best-selling products và categories
-- Product performance metrics
-- Inventory insights
-- Pricing analysis
+✅ **Dashboard Grafana** với:
+- Phân tích khách hàng (VIP, Premium, Regular)  
+- Xu hướng doanh thu theo thời gian
+- Top sản phẩm bán chạy
+- Phân bố địa lý
 
-### Business Metrics
-- Daily/Monthly sales trends
-- Revenue analytics
-- Order fulfillment metrics
-- Customer satisfaction scores
+✅ **Database PostgreSQL** với dữ liệu clean:
+- Schema `staging`: Dữ liệu đã làm sạch
+- Schema `marts`: Dữ liệu đã tổng hợp sẵn sàng phân tích
 
-## 🧪 Data Quality
+✅ **15 Data Quality Tests** đều PASS
 
-Pipeline tích hợp nhiều layers kiểm tra chất lượng dữ liệu:
+## 🤝 Đóng góp
 
-1. **Schema Validation**: Kiểm tra cấu trúc dữ liệu
-2. **Data Profiling**: Phân tích thống kê dữ liệu
-3. **Business Rules**: Kiểm tra logic nghiệp vụ
-4. **Completeness**: Kiểm tra tính đầy đủ
-5. **Accuracy**: Kiểm tra tính chính xác
+Mọi đóng góp đều được chào đón! Hãy:
 
-## 🔧 Cấu hình
+1. Fork repo này
+2. Tạo branch mới  
+3. Commit thay đổi
+4. Tạo Pull Request
 
-### Environment Variables
+## � Liên hệ
 
-Tạo file `.env` trong thư mục `data_pipeline`:
+- **GitHub**: [phuochuyy](https://github.com/phuochuyy)
+- **Project**: [olist-data-pipeline](https://github.com/phuochuyy/olist-data-pipeline)
 
-```env
-# Database
-POSTGRES_DB=olist_dw
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
+---
 
-# Airflow
-AIRFLOW__CORE__FERNET_KEY=your-fernet-key
-AIRFLOW__WEBSERVER__SECRET_KEY=your-secret-key
-
-# Spark
-SPARK_WORKER_MEMORY=2G
-SPARK_WORKER_CORES=2
-```
-
-### Scaling
-
-Để scale pipeline cho production:
-
-1. **Tăng Spark workers**:
-```yaml
-spark-worker:
-  deploy:
-    replicas: 3
-```
-
-2. **Cấu hình Airflow Executor**:
-```yaml
-AIRFLOW__CORE__EXECUTOR: CeleryExecutor
-```
-
-3. **Thêm monitoring**:
-- Prometheus metrics
-- ELK stack for logging
-- Alerting với PagerDuty/Slack
-
-## 📚 Tài liệu tham khảo
-
-- [Apache Airflow Documentation](https://airflow.apache.org/docs/)
-- [Apache Spark Documentation](https://spark.apache.org/docs/latest/)
-- [dbt Documentation](https://docs.getdbt.com/)
-- [Great Expectations Documentation](https://docs.greatexpectations.io/)
-- [Grafana Documentation](https://grafana.com/docs/)
-
-## 🔧 Development & Deployment
-
-### Local Development
-
-1. **Clone repository**:
-```bash
-git clone https://github.com/your-username/olist-data-pipeline.git
-cd olist-data-pipeline
-```
-
-2. **Copy environment files**:
-```bash
-cp .env.example .env
-cp dbt_project/profiles.yml.example dbt_project/profiles.yml
-```
-
-3. **Run setup**:
-```bash
-make setup
-make up
-```
-
-### Production Deployment
-
-- Thay đổi passwords trong `.env`
-- Cấu hình external databases
-- Setup backup và monitoring
-- Implement CI/CD pipeline
-
-## 🚀 Roadmap
-
-- [ ] Thêm CI/CD với GitHub Actions
-- [ ] Implement streaming với Kafka
-- [ ] Thêm ML models với MLflow
-- [ ] Dashboard tự động với Streamlit
-- [ ] Data lineage với Apache Atlas
-- [ ] Security scanning với Snyk
-
-## 🤝 Contributing
-
-1. Fork repository
-2. Tạo feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Tạo Pull Request
-
-## 📄 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
-
-## 📞 Contact
-
-- **Author**: Your Name
-- **Email**: your.email@example.com
-- **Project Link**: [https://github.com/your-username/olist-data-pipeline](https://github.com/your-username/olist-data-pipeline)
-
-## 🙏 Acknowledgments
-
-- [Olist Dataset](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) on Kaggle
-- Apache Software Foundation for amazing open-source tools
-- dbt Labs for modern data transformation approach
-- Docker community for containerization best practices
+⭐ **Nếu project hữu ích, hãy cho 1 star nhé!**
 
 ## 📄 License
 
