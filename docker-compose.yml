@@ -12,7 +12,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./sql/init:/docker-entrypoint-initdb.d
+      - ./init:/docker-entrypoint-initdb.d
     networks:
       - data_pipeline
 
@@ -45,6 +45,8 @@ services:
       - ./spark:/opt/airflow/spark
       - ./dbt_project:/opt/airflow/dbt_project
       - ./data:/opt/airflow/data
+      - ./great_expectations:/opt/airflow/great_expectations
+      - ./simple_data_test.py:/opt/airflow/simple_data_test.py
     ports:
       - "8080:8080"
     depends_on:
@@ -75,6 +77,7 @@ services:
       - ./spark:/opt/airflow/spark
       - ./dbt_project:/opt/airflow/dbt_project
       - ./data:/opt/airflow/data
+      - ./great_expectations:/opt/airflow/great_expectations
     depends_on:
       - postgres
       - redis

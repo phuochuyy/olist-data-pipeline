@@ -28,11 +28,6 @@ models:
     marts:
       +materialized: table
       +schema: marts
-    
-# Configuring seeds
-seeds:
-  olist_analytics:
-    +schema: raw
 
 # Configuring tests
 tests:
