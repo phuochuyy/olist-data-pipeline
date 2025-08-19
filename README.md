@@ -109,8 +109,6 @@ Sau khi pipeline chạy xong, bạn sẽ có:
 
 ---
 
-⭐ **Nếu project hữu ích, hãy cho 1 star nhé!**
-
 ## 📄 License
 
 MIT License - xem file [LICENSE](LICENSE) để biết thêm chi tiết.
