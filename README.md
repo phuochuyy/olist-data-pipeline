@@ -107,20 +107,6 @@ Sau khi pipeline chạy xong, bạn sẽ có:
 
 ✅ **15 Data Quality Tests** đều PASS
 
-## 🤝 Đóng góp
-
-Mọi đóng góp đều được chào đón! Hãy:
-
-1. Fork repo này
-2. Tạo branch mới  
-3. Commit thay đổi
-4. Tạo Pull Request
-
-## � Liên hệ
-
-- **GitHub**: [phuochuyy](https://github.com/phuochuyy)
-- **Project**: [olist-data-pipeline](https://github.com/phuochuyy/olist-data-pipeline)
-
 ---
 
 ⭐ **Nếu project hữu ích, hãy cho 1 star nhé!**
@@ -129,6 +115,5 @@ Mọi đóng góp đều được chào đón! Hãy:
 
 MIT License - xem file [LICENSE](LICENSE) để biết thêm chi tiết.
 
----
 
-**Happy Data Engineering!** 🎉
+
