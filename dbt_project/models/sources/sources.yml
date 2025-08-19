@@ -1,0 +1,71 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Raw data from Olist CSV files
+    schema: raw
+    tables:
+      - name: customers
+        description: Customer information
+        columns:
+          - name: customer_id
+            description: Unique customer identifier
+            tests:
+              - not_null
+              - unique
+          - name: customer_state
+            description: Customer state
+            tests:
+              - not_null
+              
+      - name: orders
+        description: Order information
+        columns:
+          - name: order_id
+            description: Unique order identifier
+            tests:
+              - not_null
+              - unique
+          - name: customer_id
+            description: Customer who made the order
+            tests:
+              - not_null
+              - relationships:
+                  to: source('raw', 'customers')
+                  field: customer_id
+                  
+      - name: order_items
+        description: Items within each order
+        columns:
+          - name: order_id
+            description: Order identifier
+            tests:
+              - not_null
+              - relationships:
+                  to: source('raw', 'orders')
+                  field: order_id
+          - name: price
+            description: Item price
+            tests:
+              - not_null
+              - dbt_utils.accepted_range:
+                  min_value: 0
+                  inclusive: true
+                  
+      - name: products
+        description: Product catalog
+        columns:
+          - name: product_id
+            description: Unique product identifier
+            tests:
+              - not_null
+              - unique
+              
+      - name: sellers
+        description: Seller information
+        columns:
+          - name: seller_id
+            description: Unique seller identifier
+            tests:
+              - not_null
+              - unique

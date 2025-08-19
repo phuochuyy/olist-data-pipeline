@@ -1,0 +1,319 @@
+# =============================================================================
+# DATA ENGINEERING PROJECT - GITIGNORE
+# =============================================================================
+
+# =============================================================================
+# SENSITIVE DATA & SECRETS
+# =============================================================================
+# Environment variables
+.env
+.env.local
+.env.staging
+.env.production
+.env.*.local
+
+# Secrets and credentials
+secrets/
+credentials/
+*.key
+*.pem
+*.p12
+*.pfx
+.secrets
+config/secrets.yml
+
+# Database dumps and backups
+backups/
+*.sql
+*.dump
+*.backup
+
+# =============================================================================
+# DATA FILES (Exclude from Git)
+# =============================================================================
+# CSV data files (too large for Git)
+data/
+*.csv
+*.tsv
+*.parquet
+*.avro
+*.json
+*.xml
+
+# Data exports
+exports/
+output/
+processed/
+raw/
+
+# =============================================================================
+# DOCKER & CONTAINERS
+# =============================================================================
+# Docker override files
+docker-compose.override.yml
+docker-compose.*.yml
+!docker-compose.yml
+
+# Container volumes
+volumes/
+/var/lib/docker/
+
+# =============================================================================
+# PYTHON
+# =============================================================================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Virtual environments
+.env/
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+pipenv/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# IPython
+profile_default/
+ipython_config.py
+
+# =============================================================================
+# AIRFLOW
+# =============================================================================
+# Airflow logs
+airflow/logs/
+logs/
+airflow-webserver.pid
+standalone_admin_password.txt
+
+# Airflow database
+airflow.db
+airflow.cfg
+webserver_config.py
+
+# =============================================================================
+# DBT
+# =============================================================================
+# dbt generated files
+dbt_project/target/
+dbt_project/dbt_packages/
+dbt_project/logs/
+dbt_project/.user.yml
+dbt_project/package-lock.yml
+
+# dbt profiles (may contain sensitive info)
+dbt_project/profiles.yml
+profiles.yml
+
+# =============================================================================
+# SPARK
+# =============================================================================
+# Spark logs
+spark-events/
+derby.log
+metastore_db/
+
+# Spark warehouse
+spark-warehouse/
+
+# =============================================================================
+# GREAT EXPECTATIONS
+# =============================================================================
+# Great Expectations
+great_expectations/uncommitted/
+great_expectations/checkpoints/
+great_expectations/.ge_store_backend_id
+
+# =============================================================================
+# MONITORING & LOGGING
+# =============================================================================
+# Log files
+*.log
+*.log.*
+log/
+logs/
+
+# Grafana
+grafana/data/
+grafana/logs/
+
+# Prometheus
+prometheus/data/
+
+# =============================================================================
+# IDE & EDITORS
+# =============================================================================
+# VSCode
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+
+# =============================================================================
+# OPERATING SYSTEM
+# =============================================================================
+# MacOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.nfs*
+
+# =============================================================================
+# TEMPORARY FILES
+# =============================================================================
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.orig
+*.rej
+temp/
+tmp/
+
+# =============================================================================
+# CUSTOM PROJECT FILES
+# =============================================================================
+# Local development files
+local/
+sandbox/
+playground/
+test_data/
+sample_data/
+
+# Documentation builds
+docs/_build/
+site/
+
+# =============================================================================
+# INFRASTRUCTURE AS CODE
+# =============================================================================
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+terraform.tfvars
+
+# Ansible
+*.retry
+
+# =============================================================================
+# CI/CD
+# =============================================================================
+# GitHub Actions (keep workflows, ignore artifacts)
+.github/workflows/*.log
+
+# Jenkins
+.jenkins
+
+# =============================================================================
+# ALLOW CERTAIN FILES (Override patterns above)
+# =============================================================================
+# Keep essential configuration files
+!dbt_project/dbt_project.yml
+!dbt_project/packages.yml
+!dbt_project/models/
+!dbt_project/models/**/*.sql
+!dbt_project/models/**/*.yml
+
+# Keep docker configuration
+!docker-compose.yml
+!Dockerfile*
+
+# Keep sample data for demo (small files only)
+!sample_data/*.csv
+
+# Keep documentation
+!docs/
+!README.md
+!STRUCTURE.md
+!LICENSE

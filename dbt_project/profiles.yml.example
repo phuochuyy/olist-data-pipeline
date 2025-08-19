@@ -1,0 +1,24 @@
+olist_analytics:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: postgres  # Change to localhost if running outside Docker
+      user: postgres
+      password: postgres  # Change this in production
+      port: 5432
+      dbname: olist_dw
+      schema: public
+      threads: 4
+      keepalives_idle: 0
+      
+    prod:
+      type: postgres
+      host: "{{ env_var('DB_HOST') }}"
+      user: "{{ env_var('DB_USER') }}"
+      password: "{{ env_var('DB_PASSWORD') }}"
+      port: "{{ env_var('DB_PORT') | as_number }}"
+      dbname: "{{ env_var('DB_NAME') }}"
+      schema: public
+      threads: 4
+      keepalives_idle: 0

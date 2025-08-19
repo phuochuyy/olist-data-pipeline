@@ -1,0 +1,30 @@
+# Python Dependencies
+pyspark==3.5.0
+apache-airflow==2.8.0
+apache-airflow-providers-postgres==5.8.0
+apache-airflow-providers-http==4.7.0
+dbt-core==1.7.0
+dbt-postgres==1.7.0
+great-expectations==0.18.0
+pandas==2.1.0
+psycopg2-binary==2.9.7
+redis==5.0.0
+sqlalchemy==1.4.53
+pendulum==2.1.2
+
+# Data Quality & Testing
+pytest==7.4.0
+pytest-cov==4.1.0
+flake8==6.0.0
+black==23.7.0
+
+# Monitoring & Logging
+loguru==0.7.0
+prometheus-client==0.17.1
+
+# Jupyter for exploration
+jupyter==1.0.0
+jupyterlab==4.0.0
+matplotlib==3.7.0
+seaborn==0.12.0
+plotly==5.15.0
