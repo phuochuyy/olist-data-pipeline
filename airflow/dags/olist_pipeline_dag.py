@@ -4,7 +4,6 @@ from airflow.operators.python import PythonOperator
 from airflow.operators.bash import BashOperator
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook
-from airflow.providers.http.sensors.http import HttpSensor
 import pandas as pd
 import logging
 
@@ -32,10 +31,17 @@ dag = DAG(
 )
 
 def check_data_quality(**context):
-    """Check data quality after extraction"""
+    """
+    Data quality validation function
+    
+    Đây là function mình viết để check xem data có bị lỗi gì không.
+    Mình học được rằng data quality rất quan trọng trong data pipeline.
+    """
+    # Kết nối database bằng Airflow hook (học từ documentation)
     hook = PostgresHook(postgres_conn_id='postgres_default')
     
-    # Check for null values in critical columns
+    # Danh sách các checks mình muốn làm
+    # Mình check những column quan trọng không được null
     quality_checks = [
         ("raw.customers", "customer_id", "Customer ID cannot be null"),
         ("raw.orders", "order_id", "Order ID cannot be null"),
@@ -43,10 +49,12 @@ def check_data_quality(**context):
         ("raw.products", "product_id", "Product ID cannot be null")
     ]
     
+    # Loop qua từng check (học được cách viết maintainable code)
     for table, column, message in quality_checks:
         query = f"SELECT COUNT(*) FROM {table} WHERE {column} IS NULL"
         result = hook.get_first(query)[0]
         
+        # Nếu có null values thì fail pipeline (fail fast principle)
         if result > 0:
             raise ValueError(f"Data quality check failed: {message}. Found {result} null values.")
     
@@ -95,12 +103,10 @@ def generate_data_report(**context):
     return report
 
 # Task 1: Health check
-health_check = HttpSensor(
+health_check = PostgresOperator(
     task_id='health_check_postgres',
-    http_conn_id='postgres_health',
-    endpoint='',
-    timeout=20,
-    poke_interval=5,
+    postgres_conn_id='postgres_default',
+    sql="SELECT 1;",
     dag=dag
 )
 
@@ -121,7 +127,7 @@ clean_staging = PostgresOperator(
 spark_processing = BashOperator(
     task_id='spark_data_processing',
     bash_command="""
-        docker exec pipeline05_spark-master_1 spark-submit \
+        docker exec data_pipeline-spark-master-1 spark-submit \
         --master spark://spark-master:7077 \
         --packages org.postgresql:postgresql:42.6.0 \
         --driver-memory 2g \

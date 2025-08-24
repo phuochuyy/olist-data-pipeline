@@ -2,7 +2,7 @@
 
 # Default target
 help:
-	@echo "🚀 Olist Data Engineering Pipeline Commands"
+	@echo "Olist Data Engineering Pipeline Commands"
 	@echo ""
 	@echo "Setup Commands:"
 	@echo "  setup         - Initial setup of the pipeline"
@@ -27,49 +27,49 @@ help:
 
 # Setup pipeline
 setup:
-	@echo "🔧 Setting up Olist Data Pipeline..."
+	@echo "Setting up Olist Data Pipeline..."
 	chmod +x setup.sh
 	./setup.sh
 
 # Start services
 start:
-	@echo "🚀 Starting services..."
+	@echo "Starting services..."
 	docker compose up -d
-	@echo "✅ Services started!"
+	@echo "Services started!"
 
 # Stop services
 stop:
-	@echo "🛑 Stopping services..."
+	@echo "Stopping services..."
 	docker compose down
-	@echo "✅ Services stopped!"
+	@echo "Services stopped!"
 
 # Restart services
 restart: stop start
-	@echo "🔄 Services restarted!"
+	@echo "Services restarted!"
 
 # Show logs
 logs:
-	@echo "� Showing logs..."
+	@echo "Showing logs..."
 	docker compose logs -f
 
 # Show service status
 status:
-	@echo "� Service status:"
+	@echo "Service status:"
 	docker compose ps
 
 # Run dbt transformations
 dbt-run:
-	@echo "🔄 Running dbt transformations..."
+	@echo "Running dbt transformations..."
 	docker compose exec airflow-webserver bash -c "cd /opt/airflow/dbt_project && dbt run"
 
 # Run dbt tests
 dbt-test:
-	@echo "🧪 Running dbt tests..."
+	@echo "Running dbt tests..."
 	docker compose exec airflow-webserver bash -c "cd /opt/airflow/dbt_project && dbt test"
 
 # Open Spark shell (with instructions due to ivy config issue)
 spark-shell:
-	@echo "� Spark Shell Setup:"
+	@echo "Spark Shell Setup:"
 	@echo ""
 	@echo "Due to Bitnami Spark ivy configuration, use manual setup:"
 	@echo "1. Run: make spark-bash"
@@ -83,8 +83,8 @@ spark-shell:
 
 # Access Spark container bash
 spark-bash:
-	@echo "💻 Opening Spark container bash..."
-	@echo "💡 Inside container you can run PySpark commands"
+	@echo "Opening Spark container bash..."
+	@echo "Inside container you can run PySpark commands"
 	docker compose exec spark-master bash
 
 # PySpark shell (alias to spark-shell)
@@ -92,36 +92,36 @@ pyspark: spark-shell
 
 # Test Spark installation
 spark-test:
-	@echo "🧪 Testing Spark installation..."
-	docker compose exec spark-master python3 -c "import pyspark; print('✅ PySpark version:', pyspark.__version__)"
+	@echo "Testing Spark installation..."
+	docker compose exec spark-master python3 -c "import pyspark; print('PySpark version:', pyspark.__version__)"
 
 # Connect to PostgreSQL
 psql:
-	@echo "🗄️ Connecting to PostgreSQL..."
+	@echo "Connecting to PostgreSQL..."
 	docker compose exec postgres psql -U postgres -d olist_dw
 
 # Run data quality tests
 test:
-	@echo "🧪 Running data quality tests..."
+	@echo "Running data quality tests..."
 	docker compose exec postgres psql -U postgres -d olist_dw -c "SELECT 'Database Connection' as test, 'PASSED' as status;"
-	@echo "✅ Basic test completed!"
+	@echo "Basic test completed!"
 
 # Backup database
 backup:
-	@echo "💾 Creating database backup..."
+	@echo "Creating database backup..."
 	docker compose exec postgres pg_dump -U postgres olist_dw > backup_$(shell date +%Y%m%d_%H%M%S).sql
-	@echo "✅ Backup completed!"
+	@echo "Backup completed!"
 
 # Clean up
 clean:
-	@echo "🧹 Cleaning up..."
+	@echo "Cleaning up..."
 	docker compose down -v
 	docker system prune -f
-	@echo "✅ Cleanup completed!"
+	@echo "Cleanup completed!"
 
 # Show service URLs
 urls:
-	@echo "🌐 Service URLs:"
+	@echo "Service URLs:"
 	@echo "• Airflow:  http://localhost:8080 (admin/admin)"
 	@echo "• Grafana:  http://localhost:3000 (admin/admin)"
 	@echo "• Jupyter:  http://localhost:8888"

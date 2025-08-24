@@ -1,23 +1,91 @@
-# =============================================================================
-# DATA ENGINEERING PROJECT - GITIGNORE
-# =============================================================================
+# Olist Data Pipeline - Student Project
+# =====================================
 
-# =============================================================================
-# SENSITIVE DATA & SECRETS
-# =============================================================================
-# Environment variables
+# Sensitive Data & Secrets
 .env
 .env.local
 .env.staging
 .env.production
-.env.*.local
-
-# Secrets and credentials
 secrets/
 credentials/
 *.key
 *.pem
-*.p12
+
+# Data files (too large for git)
+data/*.csv
+data/*.json
+data/*.parquet
+*.data
+
+# Backup and temporary files
+*_OLD.*
+*_CLEAN.*
+*.bak
+*.tmp
+*~
+.DS_Store
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Docker
+.docker/
+
+# Airflow
+airflow/logs/
+airflow/dags/__pycache__/
+airflow/plugins/__pycache__/
+
+# DBT
+dbt_project/logs/
+dbt_project/target/
+dbt_project/dbt_packages/
+
+# Great Expectations
+great_expectations/uncommitted/
+great_expectations/gx/uncommitted/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log
+logs/
 *.pfx
 .secrets
 config/secrets.yml
