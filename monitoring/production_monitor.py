@@ -51,6 +51,8 @@ class OlistPipelineMonitor:
         """Establish database connection"""
         try:
             self.connection = psycopg2.connect(**self.db_config)
+            # read-only checks: one failing query must not abort the others
+            self.connection.autocommit = True
             logger.info("Database connection established")
             return True
         except Exception as e:
@@ -61,26 +63,25 @@ class OlistPipelineMonitor:
         """Check data freshness across pipeline layers"""
         freshness_checks = {}
         
+        # every query returns (layer, last_update)
         queries = {
             'bronze_layer': """
-                SELECT 
+                SELECT
                     'bronze' as layer,
                     MAX(created_at) as last_update
-                FROM monitoring.pipeline_metrics 
+                FROM monitoring.pipeline_metrics
                 WHERE layer = 'bronze'
             """,
             'silver_layer': """
-                SELECT 
+                SELECT
                     'silver' as layer,
-                    COUNT(*) as record_count,
                     MAX(created_at) as last_update
                 FROM staging.fact_orders
             """,
             'gold_layer': """
-                SELECT 
+                SELECT
                     'gold' as layer,
-                    COUNT(*) as record_count,
-                    MAX(date_key) as last_date
+                    MAX(updated_at) as last_update
                 FROM marts.daily_sales_summary
             """
         }
@@ -91,9 +92,10 @@ class OlistPipelineMonitor:
             for check_name, query in queries.items():
                 cursor.execute(query)
                 result = cursor.fetchone()
+                last_update = result[1] if result else None
                 freshness_checks[check_name] = {
-                    'status': 'Fresh' if result else 'Stale',
-                    'last_update': result[1] if result else None,
+                    'status': 'Fresh' if last_update else 'Stale',
+                    'last_update': last_update,
                     'timestamp': datetime.now()
                 }
                 
@@ -170,7 +172,7 @@ class OlistPipelineMonitor:
             cursor.execute("""
                 SELECT 
                     schemaname,
-                    tablename,
+                    relname as tablename,
                     n_tup_ins as inserts,
                     n_tup_upd as updates,
                     n_tup_del as deletes,
