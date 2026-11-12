@@ -126,7 +126,7 @@ clean:
 # Show service URLs
 urls:
 	@echo "Service URLs:"
-	@echo "• Airflow:  http://localhost:8080 (admin/admin)"
-	@echo "• Grafana:  http://localhost:3000 (admin/admin)"
-	@echo "• Jupyter:  http://localhost:8888"
-	@echo "• Spark UI: http://localhost:8081"
+	@echo "- Airflow:  http://localhost:8080 (admin/admin)"
+	@echo "- Grafana:  http://localhost:3000 (admin/admin)"
+	@echo "- Jupyter:  http://localhost:8888"
+	@echo "- Spark UI: http://localhost:8081"

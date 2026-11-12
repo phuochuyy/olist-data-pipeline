@@ -51,10 +51,10 @@ class OlistPipelineTestSuite(unittest.TestCase):
         """Clean up test environment"""
         if hasattr(cls, 'connection'):
             cls.connection.close()
-            logger.info("🔌 Test database connection closed")
+            logger.info("Test database connection closed")
     
     def test_bronze_layer_data_integrity(self):
-        """🥉 Test Bronze Layer - Raw data integrity"""
+        """Test Bronze Layer - Raw data integrity"""
         logger.info("Testing Bronze Layer data integrity...")
         
         # Test 1: Check all expected tables exist
@@ -91,7 +91,7 @@ class OlistPipelineTestSuite(unittest.TestCase):
         logger.info("Bronze Layer integrity tests passed")
     
     def test_silver_layer_transformations(self):
-        """🥈 Test Silver Layer - Data transformations"""
+        """Test Silver Layer - Data transformations"""
         logger.info("Testing Silver Layer transformations...")
         
         # Test 1: Check staging tables exist and have data
@@ -134,7 +134,7 @@ class OlistPipelineTestSuite(unittest.TestCase):
         logger.info("Silver Layer transformation tests passed")
     
     def test_gold_layer_business_logic(self):
-        """🥇 Test Gold Layer - Business logic validation"""
+        """Test Gold Layer - Business logic validation"""
         logger.info("Testing Gold Layer business logic...")
         
         # Test 1: Customer metrics accuracy
@@ -341,7 +341,7 @@ def run_test_suite():
     """Run complete test suite"""
     print("\nOlist Data Pipeline - Automated Test Suite")
     print("=" * 55)
-    print(f"⏰ Started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"Started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print()
     
     # Create test suite
@@ -358,7 +358,7 @@ def run_test_suite():
     print(f"Tests Run: {result.testsRun}")
     print(f"Failures: {len(result.failures)}")
     print(f"Errors: {len(result.errors)}")
-    print(f"⏱️ Success Rate: {((result.testsRun - len(result.failures) - len(result.errors)) / result.testsRun * 100):.1f}%")
+    print(f"Success Rate: {((result.testsRun - len(result.failures) - len(result.errors)) / result.testsRun * 100):.1f}%")
     
     if result.failures:
         print("\nFAILURES:")
@@ -372,7 +372,7 @@ def run_test_suite():
             first_line = traceback.split('Exception: ')[-1].split('\n')[0]
             print(f"  - {test}: {first_line}")
     
-    print(f"\n⏰ Completed at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"\nCompleted at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     
     return result.wasSuccessful()
 

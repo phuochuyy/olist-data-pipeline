@@ -3,10 +3,10 @@
 Daily batch pipeline for the [Olist Brazilian e-commerce dataset](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) (9 CSV files, ~1.5 M rows). Spark loads it into PostgreSQL in three layers, dbt builds reporting tables, quality checks run before anything is published, and Grafana shows the results.
 
 ```
-CSV ─Spark─▶ bronze (raw) ─Spark─▶ silver (staging) ─Spark─▶ gold (marts)
-                  │
-                  ├─ quality checks: SQL + Great Expectations
-                  └─ dbt ─▶ customer mart + analytics tables ─▶ Grafana
+CSV --Spark--> bronze (raw) --Spark--> silver (staging) --Spark--> gold (marts)
+                   |
+                   +-- quality checks: SQL + Great Expectations
+                   +-- dbt --> customer mart + analytics tables --> Grafana
 Airflow runs all of it daily (11 tasks).
 ```
 
@@ -22,7 +22,7 @@ unzip olist.zip -d data
 docker compose up -d --build
 ```
 
-Then open Airflow at http://localhost:8080 (admin/admin) and unpause `olist_data_pipeline`. A run takes about 75 seconds. The dashboard is at http://localhost:3000 (admin/admin) → "Olist overview".
+Then open Airflow at http://localhost:8080 (admin/admin) and unpause `olist_data_pipeline`. A run takes about 75 seconds. The dashboard is at http://localhost:3000 (admin/admin) -> "Olist overview".
 
 ## What happens in a run
 

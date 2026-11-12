@@ -100,7 +100,7 @@ class OlistPipelineMonitor:
                 }
                 
             cursor.close()
-            logger.info("📅 Data freshness check completed")
+            logger.info("Data freshness check completed")
             
         except Exception as e:
             logger.error(f"Data freshness check failed: {e}")
@@ -301,10 +301,10 @@ class OlistPipelineMonitor:
             logger.error(f"Failed to save report: {e}")
     
     def close_connection(self):
-        """🔌 Close database connection"""
+        """Close database connection"""
         if self.connection:
             self.connection.close()
-            logger.info("🔌 Database connection closed")
+            logger.info("Database connection closed")
 
 
 def main():
@@ -336,8 +336,8 @@ def main():
         # Display summary
         print("\nPRODUCTION HEALTH SUMMARY")
         print("-" * 30)
-        print(f"⏰ Timestamp: {health_report['timestamp']}")
-        print(f"🔋 Status: {health_report['pipeline_status']}")
+        print(f"Timestamp: {health_report['timestamp']}")
+        print(f"Status: {health_report['pipeline_status']}")
         
         # Save report
         report_path = os.path.join(LOG_DIR, f"health_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
