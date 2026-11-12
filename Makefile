@@ -57,15 +57,19 @@ status:
 	@echo "Service status:"
 	docker compose ps
 
+# dbt profile comes from profiles.yml.example (profiles.yml itself is git-ignored);
+# dbt deps installs dbt_utils, which the source tests use
+DBT = mkdir -p /tmp/dbt && cp /opt/airflow/dbt_project/profiles.yml.example /tmp/dbt/profiles.yml && cd /opt/airflow/dbt_project && dbt deps --profiles-dir /tmp/dbt &&
+
 # Run dbt transformations
 dbt-run:
 	@echo "Running dbt transformations..."
-	docker compose exec airflow-webserver bash -c "cd /opt/airflow/dbt_project && dbt run"
+	docker compose exec airflow-webserver bash -c "$(DBT) dbt run --profiles-dir /tmp/dbt"
 
 # Run dbt tests
 dbt-test:
 	@echo "Running dbt tests..."
-	docker compose exec airflow-webserver bash -c "cd /opt/airflow/dbt_project && dbt test"
+	docker compose exec airflow-webserver bash -c "$(DBT) dbt test --profiles-dir /tmp/dbt"
 
 # Open Spark shell (with instructions due to ivy config issue)
 spark-shell:
