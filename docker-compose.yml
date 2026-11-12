@@ -1,5 +1,3 @@
-version: '3.8'
-
 # Fixed project name: the DAG and scripts/ refer to containers as data_pipeline-<service>-1,
 # which otherwise depends on the name of the directory the repo was cloned into.
 name: data_pipeline
