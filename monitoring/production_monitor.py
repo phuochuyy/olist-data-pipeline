@@ -16,7 +16,7 @@ import json
 import logging
 from datetime import datetime, timedelta
 import smtplib
-from email.mime.text import MimeText
+from email.mime.text import MIMEText
 from typing import Dict, List, Tuple
 
 # Configure logging
