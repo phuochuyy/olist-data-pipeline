@@ -1,14 +1,18 @@
 # Olist Data Pipeline
 
-Daily batch pipeline for the [Olist Brazilian e-commerce dataset](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) (9 CSV files, ~1.5 M rows). Spark loads it into PostgreSQL in three layers, dbt builds reporting tables, quality checks run before anything is published, and Grafana shows the results.
+Daily batch pipeline for the [Olist Brazilian e-commerce dataset](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) (9 CSV files, ~1.5 M rows). Spark loads it into PostgreSQL in three layers, dbt builds reporting tables, quality checks run before anything is published, and every run ends with an HTML report.
+
+**Report from the latest run:** https://phuochuyy.github.io/olist-data-pipeline/
 
 ```
 CSV --Spark--> bronze (raw) --Spark--> silver (staging) --Spark--> gold (marts)
                    |
                    +-- quality checks: SQL + Great Expectations
-                   +-- dbt --> customer mart + analytics tables --> Grafana
-Airflow runs all of it daily (11 tasks).
+                   +-- dbt --> customer mart + analytics tables --> Grafana + HTML report
+Airflow runs all of it daily (12 tasks).
 ```
+
+![Grafana dashboard](docs/grafana-dashboard.png)
 
 **Stack:** Airflow · Spark · PostgreSQL · dbt · Great Expectations · Grafana · Docker Compose
 
@@ -30,6 +34,7 @@ Then open Airflow at http://localhost:8080 (admin/admin) and unpause `olist_data
 2. **Quality gates**: null checks, business rules and 15 Great Expectations rules on the raw tables.
 3. **dbt** builds the customer mart and three analytics tables (revenue by state, by month, top customers) and runs 30 tests.
 4. **Monitoring**: row counts of every table go into `monitoring.pipeline_metrics` and appear in Grafana.
+5. **Report**: `monitoring/build_report.py` writes `docs/index.html` (KPIs, quality results, row counts), published with GitHub Pages.
 
 ## Two things I learned from the data
 
@@ -38,6 +43,6 @@ Then open Airflow at http://localhost:8080 (admin/admin) and unpause `olist_data
 
 ## Verified
 
-From a clean start (`docker compose down -v && up --build`): DAG 11/11 tasks green, dbt 30/30 tests, Great Expectations 15/15, test suite (`python tests/automated_test_suite.py`) 7/7.
+From a clean start (`docker compose down -v && up --build`): DAG 12/12 tasks green, dbt 30/30 tests, Great Expectations 15/15, test suite (`python tests/automated_test_suite.py`) 7/7.
 
 Local demo passwords only (admin/admin, postgres/postgres).

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Olist Pipeline Report</title><style>
+:root{--bg:#fff;--fg:#1f2328;--muted:#59636e;--line:#d0d7de;--soft:#f6f8fa;--accent:#0969da;--ok:#1a7f37;--bad:#cf222e}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--line:#30363d;--soft:#161b22;--accent:#4493f8;--ok:#3fb950;--bad:#f85149}}
+body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;max-width:980px;margin:2rem auto;padding:0 16px;color:var(--fg);background:var(--bg);line-height:1.5}
+h1{margin-bottom:.2rem}h2{margin-top:2.2rem;border-bottom:1px solid var(--line);padding-bottom:.3rem}
+.muted{color:var(--muted)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:1rem}
+.kpi{border:1px solid var(--line);border-radius:8px;padding:12px;background:var(--soft)}
+.kpi b{display:block;font-size:1.5rem}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{border-bottom:1px solid var(--line);padding:.4rem .5rem;text-align:left}th{color:var(--muted);font-weight:600}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+.ok{color:var(--ok);font-weight:600}.bad{color:var(--bad);font-weight:600}
+.bar{display:grid;grid-template-columns:80px 1fr 130px;gap:8px;align-items:center;margin:3px 0;font-size:.9rem}
+.bar-track{background:var(--soft);border-radius:4px;height:14px;overflow:hidden}
+.bar-fill{display:block;height:100%;background:var(--accent)}
+.bar-value{text-align:right;font-variant-numeric:tabular-nums}
+footer{margin-top:3rem;font-size:.85rem}
+</style></head><body>
+<h1>Olist Pipeline Report</h1>
+<p class="muted">Latest Airflow run <code>e2e_rerun</code>, finished 2026-11-12 11:35 UTC.
+Data: Olist Brazilian e-commerce, delivered orders 2016-2018.</p>
+
+<div class="kpis">
+<div class="kpi"><span class="muted">Revenue (item price)</span><b>R$ 13,221,498</b></div>
+<div class="kpi"><span class="muted">Delivered orders</span><b>96,478</b></div>
+<div class="kpi"><span class="muted">Average order value</span><b>R$ 137.04</b></div>
+<div class="kpi"><span class="muted">Customers</span><b>93,358</b><span class="muted">2,801 bought more than once</span></div>
+</div>
+
+<h2>Data quality</h2>
+<table><tr><th>Check</th><th>Result</th></tr>
+<tr><td>dbt models</td><td><span class="ok">5/5 passed</span></td></tr><tr><td>dbt tests (not_null, unique, relationships, ranges)</td><td><span class="ok">30/30 passed</span></td></tr><tr><td>Great Expectations on bronze tables</td><td><span class="ok">15/15 passed</span></td></tr>
+</table>
+<h3>Great Expectations per table</h3><table><tr><th>Table</th><th>Expectations</th></tr><tr><td>raw.customers</td><td><span class="ok">4/4 passed</span></td></tr>
+<tr><td>raw.orders</td><td><span class="ok">4/4 passed</span></td></tr>
+<tr><td>raw.order_items</td><td><span class="ok">3/3 passed</span></td></tr>
+<tr><td>raw.products</td><td><span class="ok">2/2 passed</span></td></tr>
+<tr><td>raw.sellers</td><td><span class="ok">2/2 passed</span></td></tr></table>
+
+<h2>Rows per table</h2>
+<table><tr><th>Layer</th><th>Table</th><th>Rows</th></tr>
+<tr><td>bronze</td><td>raw.customers</td><td class="num">99,441</td></tr>
+<tr><td>bronze</td><td>raw.geolocation</td><td class="num">1,000,163</td></tr>
+<tr><td>bronze</td><td>raw.order_items</td><td class="num">112,650</td></tr>
+<tr><td>bronze</td><td>raw.order_payments</td><td class="num">103,886</td></tr>
+<tr><td>bronze</td><td>raw.order_reviews</td><td class="num">99,224</td></tr>
+<tr><td>bronze</td><td>raw.orders</td><td class="num">99,441</td></tr>
+<tr><td>bronze</td><td>raw.product_category_translation</td><td class="num">71</td></tr>
+<tr><td>bronze</td><td>raw.products</td><td class="num">32,951</td></tr>
+<tr><td>bronze</td><td>raw.sellers</td><td class="num">3,095</td></tr>
+<tr><td>silver</td><td>staging.dim_customers</td><td class="num">99,441</td></tr>
+<tr><td>silver</td><td>staging.dim_geolocation</td><td class="num">19,015</td></tr>
+<tr><td>silver</td><td>staging.dim_products</td><td class="num">32,951</td></tr>
+<tr><td>silver</td><td>staging.dim_sellers</td><td class="num">3,095</td></tr>
+<tr><td>silver</td><td>staging.fact_orders</td><td class="num">112,650</td></tr>
+<tr><td>gold</td><td>marts.customer_metrics</td><td class="num">96,478</td></tr>
+<tr><td>gold</td><td>marts.daily_sales_summary</td><td class="num">612</td></tr>
+<tr><td>gold</td><td>marts.mart_customer_analytics</td><td class="num">93,358</td></tr>
+<tr><td>analytics</td><td>analytics.monthly_trends</td><td class="num">23</td></tr>
+<tr><td>analytics</td><td>analytics.revenue_by_state</td><td class="num">27</td></tr>
+<tr><td>analytics</td><td>analytics.top_customers</td><td class="num">500</td></tr>
+</table>
+
+<h2>Revenue by customer state (top 10)</h2>
+<div class="bar"><span class="bar-label">SP</span><span class="bar-track"><span class="bar-fill" style="width:100.0%"></span></span><span class="bar-value">R$ 5,067,633</span></div>
+<div class="bar"><span class="bar-label">RJ</span><span class="bar-track"><span class="bar-fill" style="width:34.7%"></span></span><span class="bar-value">R$ 1,759,651</span></div>
+<div class="bar"><span class="bar-label">MG</span><span class="bar-track"><span class="bar-fill" style="width:30.6%"></span></span><span class="bar-value">R$ 1,552,482</span></div>
+<div class="bar"><span class="bar-label">RS</span><span class="bar-track"><span class="bar-fill" style="width:14.4%"></span></span><span class="bar-value">R$ 728,897</span></div>
+<div class="bar"><span class="bar-label">PR</span><span class="bar-track"><span class="bar-fill" style="width:13.1%"></span></span><span class="bar-value">R$ 666,064</span></div>
+<div class="bar"><span class="bar-label">SC</span><span class="bar-track"><span class="bar-fill" style="width:10.0%"></span></span><span class="bar-value">R$ 507,012</span></div>
+<div class="bar"><span class="bar-label">BA</span><span class="bar-track"><span class="bar-fill" style="width:9.7%"></span></span><span class="bar-value">R$ 493,584</span></div>
+<div class="bar"><span class="bar-label">DF</span><span class="bar-track"><span class="bar-fill" style="width:5.9%"></span></span><span class="bar-value">R$ 296,498</span></div>
+<div class="bar"><span class="bar-label">GO</span><span class="bar-track"><span class="bar-fill" style="width:5.6%"></span></span><span class="bar-value">R$ 282,837</span></div>
+<div class="bar"><span class="bar-label">ES</span><span class="bar-track"><span class="bar-fill" style="width:5.3%"></span></span><span class="bar-value">R$ 268,643</span></div>
+
+<h2>Revenue per month</h2>
+<div class="bar"><span class="bar-label">2016-09</span><span class="bar-track"><span class="bar-fill" style="width:0.0%"></span></span><span class="bar-value">R$ 135</span></div>
+<div class="bar"><span class="bar-label">2016-10</span><span class="bar-track"><span class="bar-fill" style="width:4.1%"></span></span><span class="bar-value">R$ 40,325</span></div>
+<div class="bar"><span class="bar-label">2016-12</span><span class="bar-track"><span class="bar-fill" style="width:0.0%"></span></span><span class="bar-value">R$ 11</span></div>
+<div class="bar"><span class="bar-label">2017-01</span><span class="bar-track"><span class="bar-fill" style="width:11.3%"></span></span><span class="bar-value">R$ 111,798</span></div>
+<div class="bar"><span class="bar-label">2017-02</span><span class="bar-track"><span class="bar-fill" style="width:23.7%"></span></span><span class="bar-value">R$ 234,223</span></div>
+<div class="bar"><span class="bar-label">2017-03</span><span class="bar-track"><span class="bar-fill" style="width:36.4%"></span></span><span class="bar-value">R$ 359,199</span></div>
+<div class="bar"><span class="bar-label">2017-04</span><span class="bar-track"><span class="bar-fill" style="width:34.5%"></span></span><span class="bar-value">R$ 340,670</span></div>
+<div class="bar"><span class="bar-label">2017-05</span><span class="bar-track"><span class="bar-fill" style="width:49.5%"></span></span><span class="bar-value">R$ 489,338</span></div>
+<div class="bar"><span class="bar-label">2017-06</span><span class="bar-track"><span class="bar-fill" style="width:42.7%"></span></span><span class="bar-value">R$ 421,923</span></div>
+<div class="bar"><span class="bar-label">2017-07</span><span class="bar-track"><span class="bar-fill" style="width:48.8%"></span></span><span class="bar-value">R$ 481,605</span></div>
+<div class="bar"><span class="bar-label">2017-08</span><span class="bar-track"><span class="bar-fill" style="width:56.2%"></span></span><span class="bar-value">R$ 554,700</span></div>
+<div class="bar"><span class="bar-label">2017-09</span><span class="bar-track"><span class="bar-fill" style="width:61.5%"></span></span><span class="bar-value">R$ 607,400</span></div>
+<div class="bar"><span class="bar-label">2017-10</span><span class="bar-track"><span class="bar-fill" style="width:65.6%"></span></span><span class="bar-value">R$ 648,248</span></div>
+<div class="bar"><span class="bar-label">2017-11</span><span class="bar-track"><span class="bar-fill" style="width:100.0%"></span></span><span class="bar-value">R$ 987,765</span></div>
+<div class="bar"><span class="bar-label">2017-12</span><span class="bar-track"><span class="bar-fill" style="width:73.5%"></span></span><span class="bar-value">R$ 726,033</span></div>
+<div class="bar"><span class="bar-label">2018-01</span><span class="bar-track"><span class="bar-fill" style="width:93.6%"></span></span><span class="bar-value">R$ 924,645</span></div>
+<div class="bar"><span class="bar-label">2018-02</span><span class="bar-track"><span class="bar-fill" style="width:83.7%"></span></span><span class="bar-value">R$ 826,437</span></div>
+<div class="bar"><span class="bar-label">2018-03</span><span class="bar-track"><span class="bar-fill" style="width:96.5%"></span></span><span class="bar-value">R$ 953,356</span></div>
+<div class="bar"><span class="bar-label">2018-04</span><span class="bar-track"><span class="bar-fill" style="width:98.6%"></span></span><span class="bar-value">R$ 973,534</span></div>
+<div class="bar"><span class="bar-label">2018-05</span><span class="bar-track"><span class="bar-fill" style="width:99.0%"></span></span><span class="bar-value">R$ 977,545</span></div>
+<div class="bar"><span class="bar-label">2018-06</span><span class="bar-track"><span class="bar-fill" style="width:86.7%"></span></span><span class="bar-value">R$ 856,078</span></div>
+<div class="bar"><span class="bar-label">2018-07</span><span class="bar-track"><span class="bar-fill" style="width:87.9%"></span></span><span class="bar-value">R$ 867,953</span></div>
+<div class="bar"><span class="bar-label">2018-08</span><span class="bar-track"><span class="bar-fill" style="width:84.9%"></span></span><span class="bar-value">R$ 838,577</span></div>
+
+<footer class="muted">Generated 2026-11-12 11:35 UTC by the <code>build_html_report</code> task of
+<a href="https://github.com/phuochuyy/olist-data-pipeline">olist-data-pipeline</a>.</footer>
+</body></html>
