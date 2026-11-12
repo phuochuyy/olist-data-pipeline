@@ -114,11 +114,16 @@ health_check = PostgresOperator(
 clean_staging = PostgresOperator(
     task_id='clean_staging_data',
     postgres_conn_id='postgres_default',
+    # Truncate whatever staging tables exist: Spark (re)creates dim_customers and dim_products,
+    # and on the very first run the schema is still empty.
     sql="""
-        TRUNCATE TABLE staging.dim_customers;
-        TRUNCATE TABLE staging.dim_products;
-        TRUNCATE TABLE staging.dim_sellers;
-        TRUNCATE TABLE staging.fact_orders;
+        DO $$
+        DECLARE t TEXT;
+        BEGIN
+            FOR t IN SELECT tablename FROM pg_tables WHERE schemaname = 'staging' LOOP
+                EXECUTE format('TRUNCATE TABLE staging.%I', t);
+            END LOOP;
+        END $$;
     """,
     dag=dag
 )
