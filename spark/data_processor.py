@@ -179,14 +179,15 @@ class DataProcessor:
         orders_df = self.spark.read.jdbc(self.db_url, "raw.orders", properties=self.db_properties)
         order_items_df = self.spark.read.jdbc(self.db_url, "raw.order_items", properties=self.db_properties)
         products_df = self.spark.read.jdbc(self.db_url, "raw.products", properties=self.db_properties)
-        translation_df = self.spark.read.jdbc(self.db_url, "raw.product_category_translation", properties=self.db_properties)
-        
+        translation_df = self.spark.read.jdbc(self.db_url, "raw.product_category_translation", properties=self.db_properties) \
+            .withColumnRenamed("product_category_name", "translation_category_name")  # avoid ambiguous column after the join
+
         # Join all data for customer metrics
         customer_orders = orders_df.filter(col("order_status") == "delivered") \
             .join(order_items_df, "order_id") \
             .join(customers_df, "customer_id") \
             .join(products_df, order_items_df.product_id == products_df.product_id, "left") \
-            .join(translation_df, products_df.product_category_name == translation_df.product_category_name, "left")
+            .join(translation_df, products_df.product_category_name == translation_df.translation_category_name, "left")
         
         customer_metrics = customer_orders.groupBy("customer_id") \
             .agg(
