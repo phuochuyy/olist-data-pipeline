@@ -11,11 +11,11 @@ datasources:
     uid: olist-dw  # fixed uid, referenced by the provisioned dashboards
     type: postgres
     url: postgres:5432
-    database: olist_dw
     user: postgres
     secureJsonData:
       password: postgres
     jsonData:
+      database: olist_dw  # newer Grafana reads the database here, not from the top-level field
       sslmode: disable
       maxOpenConns: 100
       maxIdleConns: 100
