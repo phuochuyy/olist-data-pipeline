@@ -10,8 +10,6 @@ Batch pipeline that turns the Olist Brazilian e-commerce dataset into clean, tes
 - **Goal:** answer simple business questions (revenue, orders, average order value, best states and customers) from data that has been checked first.
 - **Output:** PostgreSQL tables in three layers, a Grafana dashboard, and an HTML report written at the end of every run.
 
-![Grafana dashboard](docs/grafana-dashboard.png)
-
 ## Architecture
 
 ```
