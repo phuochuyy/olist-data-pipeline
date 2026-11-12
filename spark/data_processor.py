@@ -10,8 +10,9 @@ class DataProcessor:
             .appName("OlistDataProcessor") \
             .config("spark.sql.adaptive.enabled", "true") \
             .config("spark.sql.adaptive.coalescePartitions.enabled", "true") \
-            .config("spark.jars", "/opt/spark/jars/postgresql-42.6.0.jar") \
             .getOrCreate()
+        # The PostgreSQL JDBC driver comes from spark-submit --packages
+        # (setting spark.jars here would replace that list on the executors)
         
         self.spark.sparkContext.setLogLevel("WARN")
         
