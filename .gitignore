@@ -372,6 +372,7 @@ terraform.tfvars
 !dbt_project/models/
 !dbt_project/models/**/*.sql
 !dbt_project/models/**/*.yml
+!dbt_project/macros/*.sql
 
 # Keep docker configuration
 !docker-compose.yml

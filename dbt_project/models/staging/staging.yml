@@ -1,0 +1,13 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: Customers with trimmed, upper-cased city/state, one row per customer_id.
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+          - unique
+      - name: customer_unique_id
+        tests:
+          - not_null

@@ -1,0 +1,19 @@
+version: 2
+
+models:
+  - name: mart_customer_analytics
+    description: One row per real customer (customer_unique_id), delivered orders only.
+    columns:
+      - name: customer_unique_id
+        tests:
+          - not_null
+          - unique
+      - name: total_orders
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+      - name: customer_segment
+        tests:
+          - accepted_values:
+              values: ['VIP', 'Premium', 'Regular', 'New']
