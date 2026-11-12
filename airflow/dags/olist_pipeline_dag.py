@@ -166,11 +166,6 @@ update_marts_metadata = PostgresOperator(
         SET updated_at = CURRENT_TIMESTAMP 
         WHERE updated_at < CURRENT_DATE;
         
-        -- Update product performance metadata
-        UPDATE marts.product_performance 
-        SET updated_at = CURRENT_TIMESTAMP 
-        WHERE updated_at < CURRENT_DATE;
-        
         -- Update daily sales summary metadata
         UPDATE marts.daily_sales_summary 
         SET updated_at = CURRENT_TIMESTAMP 
