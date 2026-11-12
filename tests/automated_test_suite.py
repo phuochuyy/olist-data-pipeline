@@ -194,8 +194,8 @@ class OlistPipelineTestSuite(unittest.TestCase):
         """)
         raw_revenue = self.cursor.fetchone()[0]
         
-        # Allow 1% tolerance for rounding differences
-        self.assertAlmostEqual(marts_revenue, raw_revenue, delta=raw_revenue * 0.01,
+        # Allow 1% tolerance for rounding differences (NUMERIC comes back as Decimal)
+        self.assertAlmostEqual(float(marts_revenue), float(raw_revenue), delta=float(raw_revenue) * 0.01,
                               msg="Revenue mismatch between raw and marts layers")
         
         logger.info("Gold Layer business logic tests passed")
