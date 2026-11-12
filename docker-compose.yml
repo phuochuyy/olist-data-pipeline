@@ -130,7 +130,7 @@ services:
 
   # Grafana for monitoring
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:13.3.1  # dashboard JSON verified on this version
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     ports:
