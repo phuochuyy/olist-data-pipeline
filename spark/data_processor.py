@@ -77,8 +77,10 @@ class DataProcessor:
             ])
         }
     
-    def extract_and_load_raw(self, data_path="/opt/airflow/data"):
+    def extract_and_load_raw(self, data_path=None):
         """Extract data from CSV files and load to raw schema"""
+        # The job runs inside the spark containers, where ./data is mounted at /opt/spark/data
+        data_path = data_path or os.environ.get("OLIST_DATA_PATH", "/opt/spark/data")
         self.define_schemas()
         
         # File mappings
