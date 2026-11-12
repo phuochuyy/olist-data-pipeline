@@ -167,6 +167,19 @@ great_expectations_validation = BashOperator(
     dag=dag
 )
 
+# Task 5c: dbt models + tests (staging view, customer mart, analytics tables).
+# Profile from profiles.yml.example (profiles.yml is git-ignored).
+dbt_build = BashOperator(
+    task_id='dbt_build',
+    bash_command="""
+        mkdir -p /tmp/dbt && cp /opt/airflow/dbt_project/profiles.yml.example /tmp/dbt/profiles.yml && \
+        cd /opt/airflow/dbt_project && \
+        dbt deps --profiles-dir /tmp/dbt && \
+        dbt build --profiles-dir /tmp/dbt
+    """,
+    dag=dag
+)
+
 # Task 6: Update marts metadata
 update_marts_metadata = PostgresOperator(
     task_id='update_marts_metadata',
@@ -236,6 +249,7 @@ cleanup_old_backups = PostgresOperator(
 # Define task dependencies
 health_check >> clean_staging >> spark_processing
 spark_processing >> [data_quality_check, business_validation, great_expectations_validation]
-[data_quality_check, business_validation, great_expectations_validation] >> update_marts_metadata
+[data_quality_check, business_validation, great_expectations_validation] >> dbt_build
+dbt_build >> update_marts_metadata
 update_marts_metadata >> generate_report
 generate_report >> backup_marts >> cleanup_old_backups
