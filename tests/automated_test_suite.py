@@ -359,12 +359,14 @@ def run_test_suite():
     if result.failures:
         print("\nFAILURES:")
         for test, traceback in result.failures:
-            print(f"  - {test}: {traceback.split('AssertionError: ')[-1].split('\\n')[0]}")
-    
+            first_line = traceback.split('AssertionError: ')[-1].split('\n')[0]
+            print(f"  - {test}: {first_line}")
+
     if result.errors:
         print("\nERRORS:")
         for test, traceback in result.errors:
-            print(f"  - {test}: {traceback.split('Exception: ')[-1].split('\\n')[0]}")
+            first_line = traceback.split('Exception: ')[-1].split('\n')[0]
+            print(f"  - {test}: {first_line}")
     
     print(f"\n⏰ Completed at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     
