@@ -185,8 +185,9 @@ class OlistPipelineTestSuite(unittest.TestCase):
         """)
         marts_revenue = self.cursor.fetchone()[0]
         
+        # Olist has no quantity column: each order_items row is one item
         self.cursor.execute("""
-            SELECT SUM(price * quantity) 
+            SELECT SUM(oi.price)
             FROM raw.order_items oi
             JOIN raw.orders o ON oi.order_id = o.order_id
             WHERE o.order_status = 'delivered'
@@ -223,14 +224,14 @@ class OlistPipelineTestSuite(unittest.TestCase):
         invalid_statuses = self.cursor.fetchall()
         self.assertEqual(len(invalid_statuses), 0, f"Found invalid order statuses: {invalid_statuses}")
         
-        # Test 3: Positive prices and quantities
+        # Test 3: Positive prices, non-negative freight (one row per item, no quantity column)
         self.cursor.execute("""
-            SELECT COUNT(*) 
-            FROM raw.order_items 
-            WHERE price <= 0 OR quantity <= 0
+            SELECT COUNT(*)
+            FROM raw.order_items
+            WHERE price <= 0 OR freight_value < 0
         """)
         invalid_amounts = self.cursor.fetchone()[0]
-        self.assertEqual(invalid_amounts, 0, "Found non-positive prices or quantities")
+        self.assertEqual(invalid_amounts, 0, "Found non-positive prices or negative freight")
         
         # Test 4: Valid date ranges
         self.cursor.execute("""
