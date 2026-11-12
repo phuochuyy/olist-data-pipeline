@@ -1,7 +1,14 @@
 apiVersion: 1
 
+# Re-create the datasource on start: older setups provisioned it without a fixed uid,
+# and Grafana cannot change the uid of an existing datasource in place.
+deleteDatasources:
+  - name: PostgreSQL-OlistDW
+    orgId: 1
+
 datasources:
   - name: PostgreSQL-OlistDW
+    uid: olist-dw  # fixed uid, referenced by the provisioned dashboards
     type: postgres
     url: postgres:5432
     database: olist_dw
