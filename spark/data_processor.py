@@ -115,9 +115,11 @@ class DataProcessor:
                 # Add created_at timestamp
                 df_with_timestamp = df.withColumn("created_at", current_timestamp())
                 
-                # Write to PostgreSQL
+                # Write to PostgreSQL. truncate=true keeps the table (TRUNCATE instead of DROP),
+                # so dbt views built on the raw tables do not block the reload.
                 df_with_timestamp.write \
                     .mode("overwrite") \
+                    .option("truncate", "true") \
                     .jdbc(self.db_url, f"raw.{table_name}", properties=self.db_properties)
                 
                 print(f"Successfully loaded {df_with_timestamp.count()} records to raw.{table_name}")
