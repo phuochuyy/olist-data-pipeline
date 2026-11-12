@@ -32,7 +32,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler(os.path.join(LOG_DIR, 'production_monitor.log')),
+        logging.FileHandler(os.path.join(LOG_DIR, 'production_monitor.log'), encoding='utf-8'),
         logging.StreamHandler()
     ]
 )
