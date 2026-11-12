@@ -37,6 +37,9 @@ class OlistPipelineTestSuite(unittest.TestCase):
         
         try:
             cls.connection = psycopg2.connect(**cls.db_config)
+            # read-only checks: autocommit so one failing query does not abort
+            # the shared transaction for every test that runs after it
+            cls.connection.autocommit = True
             cls.cursor = cls.connection.cursor()
             logger.info("Test database connection established")
         except Exception as e:
