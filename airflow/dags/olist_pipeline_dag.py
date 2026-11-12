@@ -131,13 +131,17 @@ clean_staging = PostgresOperator(
 # Task 3: Run Spark data processing
 spark_processing = BashOperator(
     task_id='spark_data_processing',
+    # spark-submit runs in this Airflow container (JDK + pyspark are in the image): the driver
+    # lives here, executors on spark-worker. No docker exec / docker socket needed.
     bash_command="""
-        docker exec data_pipeline-spark-master-1 spark-submit \
+        spark-submit \
         --master spark://spark-master:7077 \
+        --conf spark.driver.host=$(hostname -i) \
+        --conf spark.jars.ivy=/tmp/.ivy2 \
         --packages org.postgresql:postgresql:42.6.0 \
-        --driver-memory 2g \
-        --executor-memory 2g \
-        /opt/spark/jobs/data_processor.py
+        --driver-memory 1g \
+        --executor-memory 1g \
+        /opt/airflow/spark/data_processor.py
     """,
     dag=dag
 )

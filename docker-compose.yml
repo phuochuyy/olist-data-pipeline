@@ -51,6 +51,7 @@ services:
       - ./dbt_project:/opt/airflow/dbt_project
       - ./data:/opt/airflow/data
       - ./great_expectations:/opt/airflow/great_expectations
+      - ./data:/opt/spark/data  # same CSV path as on the spark workers (spark-submit runs here)
     ports:
       - "8080:8080"
     depends_on:
@@ -83,6 +84,7 @@ services:
       - ./dbt_project:/opt/airflow/dbt_project
       - ./data:/opt/airflow/data
       - ./great_expectations:/opt/airflow/great_expectations
+      - ./data:/opt/spark/data  # same CSV path as on the spark workers (spark-submit runs here)
     depends_on:
       - postgres
       - redis
