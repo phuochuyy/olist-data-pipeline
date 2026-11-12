@@ -246,6 +246,13 @@ backup_marts = PostgresOperator(
     dag=dag
 )
 
+# Task 8b: Static HTML report (KPIs, quality results, row counts) -> docs/index.html
+build_html_report = BashOperator(
+    task_id='build_html_report',
+    bash_command='python /opt/airflow/monitoring/build_report.py --out /opt/airflow/docs/index.html',
+    dag=dag
+)
+
 # Task 9: Cleanup old backups (keep last 7 days)
 cleanup_old_backups = PostgresOperator(
     task_id='cleanup_old_backups',
@@ -277,5 +284,5 @@ health_check >> clean_staging >> spark_processing
 spark_processing >> [data_quality_check, business_validation, great_expectations_validation]
 [data_quality_check, business_validation, great_expectations_validation] >> dbt_build
 dbt_build >> update_marts_metadata
-update_marts_metadata >> generate_report
-generate_report >> backup_marts >> cleanup_old_backups
+update_marts_metadata >> generate_report >> build_html_report
+build_html_report >> backup_marts >> cleanup_old_backups

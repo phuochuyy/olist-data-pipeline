@@ -50,6 +50,8 @@ services:
       - ./data:/opt/airflow/data
       - ./great_expectations:/opt/airflow/great_expectations
       - ./data:/opt/spark/data  # same CSV path as on the spark workers (spark-submit runs here)
+      - ./monitoring:/opt/airflow/monitoring
+      - ./docs:/opt/airflow/docs  # static HTML report (GitHub Pages)
     ports:
       - "8080:8080"
     depends_on:
@@ -83,6 +85,8 @@ services:
       - ./data:/opt/airflow/data
       - ./great_expectations:/opt/airflow/great_expectations
       - ./data:/opt/spark/data  # same CSV path as on the spark workers (spark-submit runs here)
+      - ./monitoring:/opt/airflow/monitoring
+      - ./docs:/opt/airflow/docs  # static HTML report (GitHub Pages)
     depends_on:
       - postgres
       - redis
