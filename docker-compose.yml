@@ -95,7 +95,7 @@ services:
 
   # Apache Spark
   spark-master:
-    image: bitnamilegacy/spark:3.5
+    image: bitnamilegacy/spark:3.5.0  # must match pyspark==3.5.0 in requirements.txt (driver runs in Airflow)
     environment:
       - SPARK_MODE=master
       - SPARK_RPC_AUTHENTICATION_ENABLED=no
@@ -112,7 +112,7 @@ services:
       - data_pipeline
 
   spark-worker:
-    image: bitnamilegacy/spark:3.5
+    image: bitnamilegacy/spark:3.5.0  # must match pyspark==3.5.0 in requirements.txt (driver runs in Airflow)
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark-master:7077
