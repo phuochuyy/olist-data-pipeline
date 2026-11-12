@@ -377,6 +377,9 @@ terraform.tfvars
 !docker-compose.yml
 !Dockerfile*
 
+# Keep postgres init scripts (mounted to /docker-entrypoint-initdb.d)
+!init/*.sql
+
 # Keep sample data for demo (small files only)
 !sample_data/*.csv
 
