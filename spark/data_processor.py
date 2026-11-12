@@ -191,11 +191,13 @@ class DataProcessor:
             .join(products_df, order_items_df.product_id == products_df.product_id, "left") \
             .join(translation_df, products_df.product_category_name == translation_df.translation_category_name, "left")
         
+        # one row per order item after the joins: count distinct orders, and define
+        # average order value as revenue / orders (not the average item price)
         customer_metrics = customer_orders.groupBy("customer_id") \
             .agg(
-                count("order_id").alias("total_orders"),
+                countDistinct("order_id").alias("total_orders"),
                 sum("price").alias("total_spent"),
-                avg("price").alias("avg_order_value"),
+                (sum("price") / countDistinct("order_id")).alias("avg_order_value"),
                 min("order_purchase_timestamp").cast("date").alias("first_order_date"),
                 max("order_purchase_timestamp").cast("date").alias("last_order_date"),
                 first(coalesce(col("product_category_name_english"), col("product_category_name"))).alias("favorite_category")
@@ -217,7 +219,7 @@ class DataProcessor:
             .agg(
                 countDistinct("order_id").alias("total_orders"),
                 sum("price").alias("total_revenue"),
-                avg("price").alias("avg_order_value"),
+                (sum("price") / countDistinct("order_id")).alias("avg_order_value"),
                 countDistinct("customer_id").alias("unique_customers")
             ).withColumn("created_at", current_timestamp()) \
             .withColumn("updated_at", current_timestamp())
