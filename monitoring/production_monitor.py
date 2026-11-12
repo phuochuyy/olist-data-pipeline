@@ -14,17 +14,25 @@ import psycopg2
 import pandas as pd
 import json
 import logging
+import os
 from datetime import datetime, timedelta
 import smtplib
 from email.mime.text import MIMEText
 from typing import Dict, List, Tuple
+
+# Logs and reports go to <repo>/logs (override with MONITOR_LOG_DIR)
+LOG_DIR = os.getenv(
+    'MONITOR_LOG_DIR',
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'logs')
+)
+os.makedirs(LOG_DIR, exist_ok=True)
 
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('/home/phuochuy/Projects/pipeline05/data_pipeline/logs/production_monitor.log'),
+        logging.FileHandler(os.path.join(LOG_DIR, 'production_monitor.log')),
         logging.StreamHandler()
     ]
 )
@@ -330,7 +338,7 @@ def main():
         print(f"🔋 Status: {health_report['pipeline_status']}")
         
         # Save report
-        report_path = f"/home/phuochuy/Projects/pipeline05/data_pipeline/logs/health_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        report_path = os.path.join(LOG_DIR, f"health_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
         monitor.save_report(health_report, report_path)
         
         print(f"Full report saved to: {report_path}")
