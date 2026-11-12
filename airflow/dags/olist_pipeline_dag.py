@@ -160,6 +160,13 @@ business_validation = PythonOperator(
     dag=dag
 )
 
+# Task 5b: Great Expectations suites on the bronze tables (exit code 1 = failed expectation)
+great_expectations_validation = BashOperator(
+    task_id='great_expectations_validation',
+    bash_command='cd /tmp && python /opt/airflow/great_expectations/data_quality.py',
+    dag=dag
+)
+
 # Task 6: Update marts metadata
 update_marts_metadata = PostgresOperator(
     task_id='update_marts_metadata',
@@ -228,7 +235,7 @@ cleanup_old_backups = PostgresOperator(
 
 # Define task dependencies
 health_check >> clean_staging >> spark_processing
-spark_processing >> [data_quality_check, business_validation]
-[data_quality_check, business_validation] >> update_marts_metadata
+spark_processing >> [data_quality_check, business_validation, great_expectations_validation]
+[data_quality_check, business_validation, great_expectations_validation] >> update_marts_metadata
 update_marts_metadata >> generate_report
 generate_report >> backup_marts >> cleanup_old_backups
