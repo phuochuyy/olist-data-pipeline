@@ -82,25 +82,51 @@ def validate_business_rules(**context):
     
     logging.info("Business rule validation completed!")
 
+LAYERS = {'raw': 'bronze', 'staging': 'silver', 'marts': 'gold', 'analytics': 'analytics'}
+
+METRICS_DDL = """
+    CREATE SCHEMA IF NOT EXISTS monitoring;
+    CREATE TABLE IF NOT EXISTS monitoring.pipeline_metrics (
+        id          BIGSERIAL PRIMARY KEY,
+        run_id      TEXT        NOT NULL,
+        layer       TEXT        NOT NULL,
+        table_name  TEXT        NOT NULL,
+        row_count   BIGINT      NOT NULL,
+        created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+    );
+"""
+
+
 def generate_data_report(**context):
-    """Generate data processing report"""
+    """Count rows of every pipeline table and store them in monitoring.pipeline_metrics.
+
+    One row per table and DAG run: Grafana plots it, monitoring/production_monitor.py
+    uses it for freshness, and a sudden drop between runs is easy to spot.
+    """
     hook = PostgresHook(postgres_conn_id='postgres_default')
-    
-    # Get record counts
-    tables = ['customers', 'orders', 'order_items', 'products', 'sellers']
-    report = {}
-    
-    for table in tables:
-        count = hook.get_first(f"SELECT COUNT(*) FROM raw.{table}")[0]
-        report[table] = count
-    
-    # Log the report
-    logging.info("=== DATA PROCESSING REPORT ===")
-    for table, count in report.items():
-        logging.info(f"{table}: {count:,} records")
-    
-    # You could also send this to an external monitoring system
-    return report
+    hook.run(METRICS_DDL)
+
+    tables = hook.get_records("""
+        SELECT table_schema, table_name
+        FROM information_schema.tables
+        WHERE table_schema IN ('raw', 'staging', 'marts', 'analytics')
+          AND table_type = 'BASE TABLE'
+          AND table_name NOT LIKE '%\_backup\_%'
+        ORDER BY 1, 2
+    """)
+
+    rows = []
+    for schema, table in tables:
+        count = hook.get_first(f'SELECT COUNT(*) FROM "{schema}"."{table}"')[0]
+        rows.append((context['run_id'], LAYERS[schema], f"{schema}.{table}", count))
+
+    hook.insert_rows('monitoring.pipeline_metrics', rows,
+                     target_fields=['run_id', 'layer', 'table_name', 'row_count'])
+
+    logging.info("=== DATA PROCESSING REPORT (%s) ===", context['run_id'])
+    for _, layer, table, count in rows:
+        logging.info("%-8s %-40s %12s rows", layer, table, f"{count:,}")
+    return {table: count for _, _, table, count in rows}
 
 # Task 1: Health check
 health_check = PostgresOperator(
