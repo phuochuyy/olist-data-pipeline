@@ -134,6 +134,7 @@ class DataProcessor:
         customers_df = self.spark.read.jdbc(self.db_url, "raw.customers", properties=self.db_properties)
         
         customers_staging = customers_df.select(
+            col("customer_id").alias("customer_key"),  # join key used by fact_orders
             col("customer_id"),
             col("customer_unique_id"),
             col("customer_zip_code_prefix"),
@@ -170,7 +171,59 @@ class DataProcessor:
         products_staging.write \
             .mode("overwrite") \
             .jdbc(self.db_url, "staging.dim_products", properties=self.db_properties)
-        
+
+        # Sellers dimension
+        sellers_df = self.spark.read.jdbc(self.db_url, "raw.sellers", properties=self.db_properties)
+        sellers_staging = sellers_df.select(
+            col("seller_id"),
+            col("seller_zip_code_prefix"),
+            upper(trim(col("seller_city"))).alias("seller_city"),
+            upper(trim(col("seller_state"))).alias("seller_state"),
+            current_timestamp().alias("created_at")
+        ).dropDuplicates(["seller_id"])
+
+        sellers_staging.write \
+            .mode("overwrite") \
+            .jdbc(self.db_url, "staging.dim_sellers", properties=self.db_properties)
+
+        # Geolocation dimension: ~1M raw points -> one row per zip code prefix
+        geolocation_df = self.spark.read.jdbc(self.db_url, "raw.geolocation", properties=self.db_properties)
+        geolocation_staging = geolocation_df.groupBy("geolocation_zip_code_prefix").agg(
+            avg("geolocation_lat").alias("latitude"),
+            avg("geolocation_lng").alias("longitude"),
+            first(upper(col("geolocation_city"))).alias("city"),
+            first(upper(col("geolocation_state"))).alias("state"),
+            count(lit(1)).alias("raw_points")
+        ).withColumnRenamed("geolocation_zip_code_prefix", "zip_code_prefix") \
+            .withColumn("created_at", current_timestamp())
+
+        geolocation_staging.write \
+            .mode("overwrite") \
+            .jdbc(self.db_url, "staging.dim_geolocation", properties=self.db_properties)
+
+        # Fact table, grain = one order item
+        orders_df = self.spark.read.jdbc(self.db_url, "raw.orders", properties=self.db_properties)
+        order_items_df = self.spark.read.jdbc(self.db_url, "raw.order_items", properties=self.db_properties)
+        fact_orders = order_items_df.join(orders_df, "order_id").select(
+            col("order_id"),
+            col("order_item_id"),
+            col("customer_id").alias("customer_key"),
+            col("product_id"),
+            col("seller_id"),
+            col("order_status"),
+            col("order_purchase_timestamp"),
+            col("order_purchase_timestamp").cast("date").alias("date_key"),
+            col("order_delivered_customer_date"),
+            col("order_estimated_delivery_date"),
+            col("price"),
+            col("freight_value"),
+            current_timestamp().alias("created_at")
+        )
+
+        fact_orders.write \
+            .mode("overwrite") \
+            .jdbc(self.db_url, "staging.fact_orders", properties=self.db_properties)
+
         print("Staging transformation completed")
     
     def create_marts(self):
