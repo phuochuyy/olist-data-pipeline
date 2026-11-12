@@ -9,43 +9,46 @@ if ! command -v docker &> /dev/null; then
     exit 1
 fi
 
-# Check if Docker Compose is installed
-if ! command -v docker compose &> /dev/null; then
+# Check if Docker Compose (v2 plugin) is installed
+if ! docker compose version &> /dev/null; then
     echo "Docker Compose is not installed. Please install Docker Compose first."
     exit 1
 fi
 
+# Always run from the repository root (where docker-compose.yml lives)
+cd "$(dirname "$0")"
+
 # Create necessary directories
 echo "Creating directories..."
-mkdir -p data_pipeline/airflow/logs
-mkdir -p data_pipeline/airflow/plugins
-mkdir -p data_pipeline/notebooks
-mkdir -p data_pipeline/spark/jars
+mkdir -p airflow/logs
+mkdir -p airflow/plugins
+mkdir -p data
+mkdir -p spark/jars
 
 # Download PostgreSQL JDBC driver for Spark
 echo "Downloading PostgreSQL JDBC driver..."
-if [ ! -f data_pipeline/spark/jars/postgresql-42.6.0.jar ]; then
+if [ ! -f spark/jars/postgresql-42.6.0.jar ]; then
     curl -L https://jdbc.postgresql.org/download/postgresql-42.6.0.jar \
-         -o data_pipeline/spark/jars/postgresql-42.6.0.jar
+         -o spark/jars/postgresql-42.6.0.jar
 fi
 
 # Set proper permissions
 echo "Setting permissions..."
-chmod -R 755 data_pipeline/airflow
+chmod -R 755 airflow
 chmod +x setup.sh
 
-# Copy CSV files to data directory (if they exist)
+# Check that the Olist CSV files are in ./data (mounted into the containers)
 echo "Preparing data files..."
-if [ -f olist_customers_dataset.csv ]; then
-    echo "Found CSV files in current directory"
+if [ -f data/olist_customers_dataset.csv ]; then
+    echo "Found Olist CSV files in ./data"
 else
-    echo "CSV files not found in current directory"
-    echo "   Please ensure all Olist CSV files are in the project root"
+    echo "Olist CSV files not found in ./data"
+    echo "   Download https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce"
+    echo "   and extract all 9 CSV files into ./data"
 fi
 
 # Build and start services
 echo "Starting Docker services..."
-cd data_pipeline
 docker compose up -d
 
 # Wait for services to be ready
